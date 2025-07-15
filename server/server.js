@@ -2,14 +2,17 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 //  Main route file (indexRoutes.js combines all route modules)
-import routes from "./routes/index.js";
+import routes from "./routes/index.routes.js";
 
 dotenv.config();
 const app = express();
 
 // Global Middlewares
+app.use(cookieParser());
+
 const allowedOrigins = ["http://localhost:5173", "https://your-live-site.com"];
 
 app.use(
