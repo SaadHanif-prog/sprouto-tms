@@ -8,7 +8,7 @@ import EditTaskModal from "../modals/update-task-modal";
 import DeleteTaskModal from "../modals/delete-task-modal";
 
 // Fetch Functions
-import { getAllTasks, deleteTask } from "../api/task.api";
+import { getAllTasks, deleteTask, updateTask } from "../api/task.api";
 
 export default function TaskList({ tasks, setTasks }) {
   const [editModalTask, setEditModalTask] = useState(null);
@@ -32,7 +32,7 @@ export default function TaskList({ tasks, setTasks }) {
 
   const updateTask = (updatedTask) => {
     setTasks((prev) =>
-      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
     );
   };
 

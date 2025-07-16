@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { updateTask as updateTaskAPI } from "../api/task.api";
 
 export default function EditTaskModal({ task, onClose, onUpdate }) {
   const [title, setTitle] = useState(task.title);
@@ -9,10 +10,24 @@ export default function EditTaskModal({ task, onClose, onUpdate }) {
     setDesc(task.description);
   }, [task]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate({ ...task, title, description: desc });
-    onClose();
+    try {
+      const response = await updateTaskAPI(task._id, {
+        title,
+        description: desc,
+      });
+
+      if (response && response.data) {
+        onUpdate(response.data);
+      } else {
+        console.error("No data returned from update API");
+      }
+
+      onClose();
+    } catch (err) {
+      console.error("Failed to update task:", err.message);
+    }
   };
 
   return (
@@ -30,7 +45,7 @@ export default function EditTaskModal({ task, onClose, onUpdate }) {
           <textarea
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
-            className="border p-2 rounded  h-30"
+            className="border p-2 rounded h-30"
             required
           />
           <div className="flex justify-end gap-2">

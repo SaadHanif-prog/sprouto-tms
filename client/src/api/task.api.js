@@ -1,4 +1,4 @@
-import API_PATHS from "../url";
+import API_PATHS from "../../url";
 
 // Helper to handle response
 const handleResponse = async (res) => {
