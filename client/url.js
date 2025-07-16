@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:5000";
+// const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://sprouto-tms.onrender.com";
 
 const API_PATHS = {
   // Task routes

@@ -150,7 +150,7 @@ export default function TaskList({ tasks, setTasks }) {
                   <select
                     value={task.status}
                     onChange={(e) => updateStatus(task._id, e.target.value)}
-                    className="text-sm border rounded px-1 py-0.5 focus:outline-none"
+                    className="text-sm rounded px-1 py-0.5 "
                   >
                     <option value="pending">Pending</option>
                     <option value="completed">Completed</option>

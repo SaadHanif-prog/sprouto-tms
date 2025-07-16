@@ -13,7 +13,10 @@ const app = express();
 // Global Middlewares
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:5173", "https://your-live-site.com"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://elegant-tiramisu-ac6047.netlify.app/",
+];
 
 app.use(
   cors({
