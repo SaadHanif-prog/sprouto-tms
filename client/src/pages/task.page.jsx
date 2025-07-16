@@ -4,46 +4,59 @@ import AuthNotice from "../components/authnotice";
 import Navbar from "../components/navbar";
 import TaskList from "../components/tasklist";
 
-//Modals
+// Modals
 import AuthBox from "../modals/authbox";
 
-// Api Functions
+// API Functions
 import { checkAuth, logout } from "../api/auth.api";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Verify Auth
   useEffect(() => {
     const verifyAuth = async () => {
       try {
         const result = await checkAuth();
-        console.log("checkAuth() result:", result);
-
         if (result?.user) {
-          console.log("User is logged in:", result.user.username);
           setIsLoggedIn(true);
         } else {
-          console.log("No user in response");
           setIsLoggedIn(false);
         }
       } catch (err) {
-        console.log("User is NOT logged in:", err.message);
+        console.log("Auth check failed:", err.response?.data || err.message);
+
+        if (err.response?.status === 401) {
+          console.warn("Session expired. Prompting re-login.");
+          setIsAuthModalOpen(true);
+        }
+
         setIsLoggedIn(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     verifyAuth();
-  }, [isLoggedIn]);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center p-8">
+        <div className="animate-spin h-10 w-10 border-2 border-black border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
 
   return (
     <>
       {!isLoggedIn && <AuthNotice setIsAuthModalOpen={setIsAuthModalOpen} />}
 
       {isLoggedIn && (
-        <div className="max-w-5xl mx-auto flex justify-end mt-2 ">
+        <div className="max-w-5xl mx-auto flex justify-end mt-2">
           <button
             onClick={async () => {
               try {
@@ -53,7 +66,7 @@ export default function Tasks() {
                 console.error("Logout failed:", err.message);
               }
             }}
-            className="border-b border-b-primary text-white  hover:text-red-600 cursor-pointer mr-2"
+            className="border-b border-b-primary text-white hover:text-red-600 cursor-pointer mr-2"
           >
             Logout
           </button>
@@ -62,6 +75,7 @@ export default function Tasks() {
 
       <Navbar setTasks={setTasks} />
       <TaskList tasks={tasks} setTasks={setTasks} />
+
       {isAuthModalOpen && (
         <AuthBox
           setIsAuthModalOpen={setIsAuthModalOpen}

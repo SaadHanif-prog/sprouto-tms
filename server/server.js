@@ -27,8 +27,7 @@ app.use(
 
 app.use(express.json({ limit: "10kb" }));
 
-// API version prefix
-app.use("/api/v1", routes);
+app.use(routes);
 
 // DB connection
 mongoose
