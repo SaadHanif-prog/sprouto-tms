@@ -3,11 +3,15 @@ import taskController from "../controllers/task.controller.js";
 
 const Router = express.Router();
 
+// Middlewares
+
+import authMiddleware from "../middlewares/auth.middleware.js";
+
 // Routes
-Router.post("/tasks", taskController.createTask);
-Router.get("/tasks", taskController.getAllTasks);
-Router.get("/tasks/:id", taskController.getTaskById);
-Router.put("/tasks/:id", taskController.updateTask);
-Router.delete("/tasks/:id", taskController.deleteTask);
+Router.post("/", authMiddleware, taskController.createTask);
+Router.get("/", taskController.getAllTasks);
+Router.get("/:id", taskController.getTaskById);
+Router.put("/:id", authMiddleware, taskController.updateTask);
+Router.delete("/:id", authMiddleware, taskController.deleteTask);
 
 export default Router;
