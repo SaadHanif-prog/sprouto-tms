@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://elegant-tiramisu-ac6047.netlify.app/",
+  "https://majestic-genie-9b3c4f.netlify.app/",
 ];
 
 app.use(
