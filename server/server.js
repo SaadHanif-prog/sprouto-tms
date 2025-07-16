@@ -18,6 +18,7 @@ const allowedOrigins = ["http://localhost:5173", "https://your-live-site.com"];
 app.use(
   cors({
     origin: allowedOrigins,
+    credentials: true,
   })
 );
 

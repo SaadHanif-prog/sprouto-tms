@@ -8,13 +8,14 @@ import TaskList from "../components/tasklist";
 import AuthBox from "../modals/authbox";
 
 export default function App() {
+  const [tasks, setTasks] = useState([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   return (
     <>
       <AuthNotice setIsAuthModalOpen={setIsAuthModalOpen} />
-      <Navbar />;
-      <TaskList />
+      <Navbar setTasks={setTasks} />;
+      <TaskList tasks={tasks} setTasks={setTasks} />
       {isAuthModalOpen && <AuthBox setIsAuthModalOpen={setIsAuthModalOpen} />}
     </>
   );

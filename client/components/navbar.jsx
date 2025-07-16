@@ -6,7 +6,7 @@ import AddTaskModal from "../modals/add-task-modal";
 // Icons
 import { Plus } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ setTasks }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -30,10 +30,7 @@ export default function Navbar() {
       </header>
 
       {isOpen && (
-        <AddTaskModal
-          onClose={() => setIsOpen(false)}
-          // onSubmit={handleAddTask}
-        />
+        <AddTaskModal onClose={() => setIsOpen(false)} setTasks={setTasks} />
       )}
     </>
   );

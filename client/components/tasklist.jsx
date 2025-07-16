@@ -1,53 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Icons
-import { Pencil, Trash2, Star, StarOff } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 // Modals
 import EditTaskModal from "../modals/update-task-modal";
 import DeleteTaskModal from "../modals/delete-task-modal";
 
-export default function TaskList() {
-  const initialTasks = [
-    {
-      id: 1,
-      title: "Buy groceries",
-      description:
-        "Complete the frontend and backend integration, write tests, and finalize documentation for the upcoming Monday release.",
-      important: false,
-      status: "pending",
-    },
-    {
-      id: 2,
-      title: "Finish project",
-      description:
-        "Complete the frontend and backend integration, write tests, and finalize documentation for the upcoming Monday release.",
-      important: false,
-      status: "completed",
-    },
-    {
-      id: 3,
-      title: "Call friend",
-      description:
-        "Don’t forget to call Alex and wish him a happy birthday. Ask about the trip and schedule a coffee meetup next week.",
-      important: false,
-      status: "pending",
-    },
-  ];
+// Fetch Functions
+import { getAllTasks, deleteTask } from "../api/task.api";
 
-  const [tasks, setTasks] = useState(initialTasks);
+export default function TaskList({ tasks, setTasks }) {
   const [editModalTask, setEditModalTask] = useState(null);
   const [deleteModalTask, setDeleteModalTask] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const toggleImportant = (id) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, important: !task.important } : task
-      )
-    );
-  };
+  // Fetch All Tasks
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await getAllTasks();
+        setTasks(response.data);
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err.message);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const updateTask = (updatedTask) => {
     setTasks((prev) =>
@@ -55,8 +36,13 @@ export default function TaskList() {
     );
   };
 
-  const deleteTask = (id) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+  const deleteTaskHandler = async (id) => {
+    try {
+      await deleteTask(id);
+      setTasks((prev) => prev.filter((task) => task._id !== id));
+    } catch (err) {
+      console.error("Failed to delete task:", err.message);
+    }
   };
 
   const updateStatus = (id, status) => {
@@ -113,59 +99,53 @@ export default function TaskList() {
 
       {/* Task Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {filteredTasks.map((task) => (
-          <div
-            key={task.id}
-            className={`border border-gray-300 rounded-md p-4 shadow-sm flex flex-col gap-y-2 ${
-              task.important ? "bg-yellow-100" : "bg-white"
-            }`}
-          >
-            <div className="text-lg font-semibold flex justify-between items-center ">
-              {task.title}
-              <div className="flex gap-x-2">
-                <button
-                  className="text-yellow-500 hover:text-yellow-600"
-                  onClick={() => toggleImportant(task.id)}
-                >
-                  {task.important ? (
-                    <Star fill="currentColor" size={18} />
-                  ) : (
-                    <StarOff size={18} />
-                  )}
-                </button>
-                <button
-                  className="text-blue-500 hover:text-blue-700"
-                  onClick={() => setEditModalTask(task)}
-                >
-                  <Pencil size={18} />
-                </button>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => setDeleteModalTask(task)}
-                >
-                  <Trash2 size={18} />
-                </button>
+        {filteredTasks.length === 0 ? (
+          <p className="text-center text-primary col-span-2">
+            No tasks found. You can add one now.
+          </p>
+        ) : (
+          filteredTasks.map((task) => (
+            <div
+              key={task._id}
+              className="border border-gray-300 rounded-md p-4 shadow-sm flex flex-col gap-y-2 bg-white"
+            >
+              <div className="text-lg font-semibold flex justify-between items-center">
+                {task.title}
+                <div className="flex gap-x-2">
+                  <button
+                    className="text-blue-500 hover:text-blue-700"
+                    onClick={() => setEditModalTask(task)}
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => setDeleteModalTask(task)}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <select
-                  value={task.status}
-                  onChange={(e) => updateStatus(task.id, e.target.value)}
-                  className="text-sm border rounded px-1 py-0.5 focus:outline-none"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                </select>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <select
+                    value={task.status}
+                    onChange={(e) => updateStatus(task.id, e.target.value)}
+                    className="text-sm border rounded px-1 py-0.5 focus:outline-none"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <p className="text-gray-600">
-              {getShortDescription(task.description)}
-            </p>
-          </div>
-        ))}
+              <p className="text-gray-600">
+                {getShortDescription(task.description)}
+              </p>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Modals */}
@@ -180,7 +160,7 @@ export default function TaskList() {
         <DeleteTaskModal
           task={deleteModalTask}
           onClose={() => setDeleteModalTask(null)}
-          onConfirm={deleteTask}
+          onConfirm={() => deleteTaskHandler(deleteModalTask._id)}
         />
       )}
     </main>

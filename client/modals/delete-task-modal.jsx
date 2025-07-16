@@ -17,7 +17,7 @@ export default function DeleteTaskModal({ task, onClose, onConfirm }) {
           </button>
           <button
             onClick={() => {
-              onConfirm(task.id);
+              onConfirm(task._id);
               onClose();
             }}
             className="text-md md:text-lg px-4 py-2 bg-red-500 text-white rounded cursor-pointer"
