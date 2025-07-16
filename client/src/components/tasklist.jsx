@@ -91,7 +91,7 @@ export default function TaskList({ tasks, setTasks }) {
         <div className="flex justify-center">
           <input
             type="text"
-            placeholder="Search by name"
+            placeholder="Search by Title name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border px-3 py-1 rounded-md text-sm w-60 h-10"
