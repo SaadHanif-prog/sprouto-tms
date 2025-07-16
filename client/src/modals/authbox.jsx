@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-export default function AuthBox({ setIsAuthModalOpen }) {
+// Api Functions
+import { signup, login } from "../api/auth.api";
+
+// Toastify
+import { toast } from "react-toastify";
+
+export default function AuthBox({ setIsAuthModalOpen, setIsLoggedIn }) {
   const [isSignup, setIsSignup] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -17,12 +23,23 @@ export default function AuthBox({ setIsAuthModalOpen }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSignup) {
-      console.log("Signing up with", formData);
-    } else {
-      console.log("Logging in with", formData);
+
+    try {
+      const response = isSignup
+        ? await signup(formData)
+        : await login(formData);
+
+      setIsLoggedIn(true);
+
+      console.log("Success:", response);
+
+      setIsAuthModalOpen(false);
+    } catch (err) {
+      console.error("Auth error:", err.message);
+      toast.error(err.message);
+      setIsLoggedIn(false);
     }
   };
 

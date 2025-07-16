@@ -47,6 +47,20 @@ export const updateTask = async (id, updatedData) => {
   return handleResponse(res);
 };
 
+// Update Task Status (requires auth)
+
+export const updateTaskStatus = async (id, status) => {
+  const res = await fetch(API_PATHS.UPDATE_TASK_STATUS(id), {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ status }),
+  });
+  return handleResponse(res);
+};
+
 // Delete Task (requires auth)
 export const deleteTask = async (id) => {
   const res = await fetch(API_PATHS.DELETE_TASK(id), {

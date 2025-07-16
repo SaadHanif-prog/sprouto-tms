@@ -1,4 +1,4 @@
-import API_PATHS from "../url";
+import API_PATHS from "../../url";
 
 const handleResponse = async (res) => {
   const data = await res.json();
@@ -35,4 +35,19 @@ export const logout = async () => {
     credentials: "include",
   });
   return handleResponse(res);
+};
+
+// Check Auth
+
+export const checkAuth = async () => {
+  const res = await fetch(API_PATHS.CHECK_AUTH, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Not authenticated");
+  }
+
+  return res.json();
 };

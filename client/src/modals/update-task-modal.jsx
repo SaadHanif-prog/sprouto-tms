@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { updateTask as updateTaskAPI } from "../api/task.api";
 
+// Toastify
+import { toast } from "react-toastify";
+
 export default function EditTaskModal({ task, onClose, onUpdate }) {
   const [title, setTitle] = useState(task.title);
   const [desc, setDesc] = useState(task.description);
@@ -27,6 +30,7 @@ export default function EditTaskModal({ task, onClose, onUpdate }) {
       onClose();
     } catch (err) {
       console.error("Failed to update task:", err.message);
+      toast.error(err.message);
     }
   };
 

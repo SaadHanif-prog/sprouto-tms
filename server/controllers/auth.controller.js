@@ -68,19 +68,37 @@ const login = async (req, res) => {
   }
 };
 
+const checkAuth = async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "No token" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      isAuthenticated: true,
+      user: { id: user._id, username: user.username },
+    });
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};
+
 const logout = (req, res) => {
-  res
-    .clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-    })
-    .status(200)
-    .json({ message: "Logout successful" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "Lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.json({ message: "Logout successful" });
 };
 
 export default {
   signup,
   login,
+  checkAuth,
   logout,
 };

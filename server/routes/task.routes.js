@@ -12,6 +12,7 @@ Router.post("/", authMiddleware, taskController.createTask);
 Router.get("/", taskController.getAllTasks);
 Router.get("/:id", taskController.getTaskById);
 Router.put("/:id", authMiddleware, taskController.updateTask);
+Router.put("/:id/status", authMiddleware, taskController.updateTaskStatus);
 Router.delete("/:id", authMiddleware, taskController.deleteTask);
 
 export default Router;

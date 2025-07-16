@@ -10,6 +10,9 @@ import DeleteTaskModal from "../modals/delete-task-modal";
 // Fetch Functions
 import { getAllTasks, deleteTask, updateTask } from "../api/task.api";
 
+// Toastify
+import { toast } from "react-toastify";
+
 export default function TaskList({ tasks, setTasks }) {
   const [editModalTask, setEditModalTask] = useState(null);
   const [deleteModalTask, setDeleteModalTask] = useState(null);
@@ -42,6 +45,7 @@ export default function TaskList({ tasks, setTasks }) {
       setTasks((prev) => prev.filter((task) => task._id !== id));
     } catch (err) {
       console.error("Failed to delete task:", err.message);
+      toast.error(err.message);
     }
   };
 

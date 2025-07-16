@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { createTask } from "../api/task.api";
 
+// Toastify
+import { toast } from "react-toastify";
+
 export default function AddTaskModal({ onClose, setTasks }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [error, setError] = useState("");
 
   // Add Task
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
       const response = await createTask({ title, description: desc });
@@ -23,7 +24,7 @@ export default function AddTaskModal({ onClose, setTasks }) {
       setDesc("");
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create task");
+      toast.error(err.message);
     }
   };
 
@@ -31,8 +32,6 @@ export default function AddTaskModal({ onClose, setTasks }) {
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
       <div className="bg-white p-4 md:p-6 rounded-md shadow-lg w-[90%] md:max-w-md">
         <h2 className="text-lg md:text-2xl font-semibold mb-4">Add Task</h2>
-
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input

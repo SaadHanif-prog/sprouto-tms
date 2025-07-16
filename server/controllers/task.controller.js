@@ -108,10 +108,44 @@ const deleteTask = async (req, res) => {
   }
 };
 
+const updateTaskStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!["pending", "completed"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status must be either 'pending' or 'completed'",
+      });
+    }
+
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Task status updated successfully",
+      data: task,
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
 export default {
   createTask,
   getAllTasks,
   getTaskById,
   updateTask,
   deleteTask,
+  updateTaskStatus,
 };
