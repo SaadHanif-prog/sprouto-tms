@@ -16,5 +16,14 @@
   }
 }
 
-@layer components {
+/* Custom Toastify styles */
+.Toastify__toast {
+  @apply text-sm p-2;
+}
+
+/* Even smaller on mobile */
+@media (max-width: 480px) {
+  .Toastify__toast {
+    @apply text-xs p-1;
+  }
 }

@@ -8,7 +8,7 @@ import EditTaskModal from "../modals/update-task-modal";
 import DeleteTaskModal from "../modals/delete-task-modal";
 
 // Fetch Functions
-import { getAllTasks, deleteTask, updateTask } from "../api/task.api";
+import { getAllTasks, deleteTask, updateTaskStatus } from "../api/task.api";
 
 // Toastify
 import { toast } from "react-toastify";
@@ -49,10 +49,24 @@ export default function TaskList({ tasks, setTasks }) {
     }
   };
 
-  const updateStatus = (id, status) => {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, status } : task))
-    );
+  const updateStatus = async (id, status) => {
+    try {
+      const response = await updateTaskStatus(id, status);
+      const updatedTask = response.data;
+
+      if (!updatedTask || updatedTask._id !== id) {
+        throw new Error("Invalid response from server");
+      }
+
+      setTasks((prev) =>
+        prev.map((task) =>
+          task._id === id ? { ...task, status: updatedTask.status } : task
+        )
+      );
+    } catch (err) {
+      console.error("Failed to update status:", err.message);
+      toast.error(err.message || "Failed to update task status");
+    }
   };
 
   const getShortDescription = (desc) => {
@@ -71,7 +85,7 @@ export default function TaskList({ tasks, setTasks }) {
   });
 
   return (
-    <main className="max-w-5xl mx-1 md:mx-auto border border-primary p-3 rounded-md">
+    <main className="max-w-5xl mx-1 md:mx-auto border border-primary p-3 rounded-md mt-4">
       {/* Filter and Search Bar */}
       <div className="mb-2 text-primary">
         <div className="flex justify-center">
@@ -135,7 +149,7 @@ export default function TaskList({ tasks, setTasks }) {
                 <div className="flex items-center gap-2">
                   <select
                     value={task.status}
-                    onChange={(e) => updateStatus(task.id, e.target.value)}
+                    onChange={(e) => updateStatus(task._id, e.target.value)}
                     className="text-sm border rounded px-1 py-0.5 focus:outline-none"
                   >
                     <option value="pending">Pending</option>

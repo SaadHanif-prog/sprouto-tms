@@ -5,7 +5,7 @@ const API_PATHS = {
   GET_TASKS: `${BASE_URL}/api/v1/tasks`,
   CREATE_TASK: `${BASE_URL}/api/v1/tasks`,
   UPDATE_TASK: (id) => `${BASE_URL}/api/v1/tasks/${id}`,
-  UPDATE_TASK_STATUS: (id) => `${BASE_URL}/tasks/${id}/status`,
+  UPDATE_TASK_STATUS: (id) => `${BASE_URL}/api/v1/tasks/${id}/status`,
   DELETE_TASK: (id) => `${BASE_URL}/api/v1/tasks/${id}`,
   GET_TASK_BY_ID: (id) => `${BASE_URL}/api/v1/tasks/${id}`,
 
