@@ -16,6 +16,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://roaring-shortbread-5e056e.netlify.app",
+  "https://sprouto.netlify.app",
 ];
 
 app.use(
